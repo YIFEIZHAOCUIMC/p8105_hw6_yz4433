@@ -153,3 +153,17 @@ p = ggplot(output, aes(x = reorder(city_state, or), y = or, fill = city_state)) 
 print(p)
 ```
 
+## Problem 3
+### load and clean the data
+```{r}
+bwdata =  read_csv(file = "./data/birthweight.csv", show_col_types = FALSE) %>% 
+  janitor::clean_names() %>%
+  mutate(babysex = factor(as.character(babysex)), frace = factor(as.character(frace)), malform = factor(as.character(malform)), mrace = factor(as.character(mrace)))
+```
+
+```{r}
+bwdata %>%
+  summarise_all(
+    ~ sum(is.na(.))
+  )
+```
