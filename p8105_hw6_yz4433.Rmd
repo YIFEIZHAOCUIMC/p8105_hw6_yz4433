@@ -158,6 +158,7 @@ print(p)
 ```{r}
 bwdata =  read_csv(file = "./data/birthweight.csv", show_col_types = FALSE) %>% 
   janitor::clean_names() %>%
+  drop_na() %>% 
   mutate(babysex = factor(as.character(babysex)), frace = factor(as.character(frace)), malform = factor(as.character(malform)), mrace = factor(as.character(mrace)))
 ```
 
@@ -166,4 +167,19 @@ bwdata %>%
   summarise_all(
     ~ sum(is.na(.))
   )
+```
+
+### my stepwise model
+```{r}
+lmbw = lm(bwt ~ ., data = bwdata)
+swboth = step(lmbw, direction = 'both')
+summary(swboth)
+```
+
+### add residuals and predictions
+```{r}
+bwdata %>% 
+  modelr::add_predictions(swboth) %>% 
+  modelr::add_residuals(swboth) %>% 
+  ggplot(aes(x = resid, y = pred)) + geom_point() + ggtitle('residual-fitted')
 ```
