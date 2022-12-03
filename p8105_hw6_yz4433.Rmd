@@ -142,4 +142,14 @@ output = map_dfr(list_ct, orci)
 output
 ```
 
+### plot of ORs and CIs for each city
+```{r}
+p = ggplot(output, aes(x = reorder(city_state, or), y = or, fill = city_state)) +
+  geom_bar(stat = "identity", color = "black", position = position_dodge()) +
+  geom_errorbar(aes(ymin = ci_low, ymax = ci_high), width = .2, position = position_dodge(.9)) +
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "city name", y = "estimated ORs", title = "ORs and CIs for each city")
+print(p)
+```
 
