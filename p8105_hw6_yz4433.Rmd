@@ -110,14 +110,36 @@ glmbal = glm(group ~ victim_age + victim_sex + victim_race, data = baldata, fami
 glmres = glmbal %>% 
   broom::tidy() %>% 
   mutate(OR = exp(estimate)) %>% 
-  mutate(ci = exp(confint(glmbal))) %>% 
+  mutate(ci_low = data.frame(exp(confint.default(glmbal, level = 0.95)))[[1]], ci_high = data.frame(exp(confint.default(glmbal, level = 0.95)))[[2]]) %>% 
   filter(term == "victim_sexMale") %>% 
   select(-5:-1)
+glmres
 ```
 
 ### glm for each city
 ```{r}
+ct = hcdata %>%
+  group_by(city_state)
+list_ct = group_split(ct)
+```
 
+```{r}
+orci = function(x) {
+  glmi = glm(group ~ victim_age + victim_sex + victim_race, data = x, family = binomial)
+  glmi %>% 
+    broom::tidy() %>% 
+    mutate(city_state = x[[1,13]]) %>% 
+    mutate(or = exp(estimate)) %>% 
+    mutate(ci_low = data.frame(exp(confint.default(glmi, level = 0.95)))[[1]], ci_high = data.frame(exp(confint.default(glmi, level = 0.95)))[[2]]) %>% 
+    filter(term == "victim_sexMale") %>%
+    select(-5:-1) %>% 
+    data.frame()
+}
+```
+
+```{r}
+output = map_dfr(list_ct, orci)
+output
 ```
 
 
