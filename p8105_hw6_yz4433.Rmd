@@ -146,6 +146,8 @@ output = map_dfr(list_ct, orci)
 output
 ```
 
+we run glm for each of the cities using map function.
+
 ### plot of ORs and CIs for each city
 ```{r}
 p = ggplot(output, aes(x = reorder(city_state, or), y = or, fill = city_state)) +
@@ -157,7 +159,7 @@ p = ggplot(output, aes(x = reorder(city_state, or), y = or, fill = city_state)) 
 print(p)
 ```
 
-From the plot, we find the estimated OR of city Stockton, CA is the largest, and that of New York, NY is the lowest. There is a huge gap between the largest OR and the second largest OR. For confidence interval, the range of CI of Stockton is the largest, considering the estimated OR, and that for San Bernardino, CA is also large compared with other close ORs.
+From the plot, we find the estimated OR of city Stockton, CA is the largest, and that of New York, NY is the lowest. There is a gap between the largest OR and the second largest OR. For confidence interval, the ranges of CIs for the first three largest ORs are quite long, considering the estimated OR, and ranges of CIs for San Bernardino, CA, Tampa, FL, Richmond, VA are also long compared with other close ORs. On the contrary, ranges of CIs for Chicago, IL and Detroit, MI are short.
 
 ## Problem 3
 ### load and clean the data
@@ -184,7 +186,7 @@ swboth = step(lmbw, direction = 'both')
 summary(swboth)
 ```
 
-We initially create the multiple linear regression (MLR) model using all the variables as predictors. Finally we decide to apply stepwise method for the MLR to obtain the optimal model.
+We initially create the multiple linear regression (MLR) model using all variables as predictors. Finally we decide to apply stepwise method for the MLR to obtain the optimal model.
 
 ### add residuals and predictions
 ```{r}
@@ -227,4 +229,4 @@ cv_df %>%
   ggplot(aes(x = model, y = rmse)) + geom_violin() + ggtitle('model comparison')
 ```
 
-I’m mostly focused on RMSE as a way to compare these models, and the plot above shows the distribution of RMSE values for each candidate model. We can clearly find that the MLR under stepwise model is the best among these three models, and model b with interaction factors is better that the simple MLR of model a.
+We mostly focus on RMSE as a way to compare these models, and the plot above shows the distribution of RMSE values for each candidate model. We can clearly find that the MLR under stepwise model is the best among these three models, and model b with interaction factors is better than the simple MLR of model a.
