@@ -96,8 +96,11 @@ hcdata =  read_csv(file = "./data/homicide-data.csv", show_col_types = FALSE) %>
   mutate(group = ifelse((disposition == 'Closed by arrest'), 1, 0)) %>%
   filter(!city_state %in% c("Dallas , TX", "Phoenix , AZ", "Kansas City , MO", "Tulsa , AL")) %>% 
   filter(victim_race %in% c("Black", "White")) %>% 
-  filter(victim_age != 'Unknown')
+  filter(victim_age != 'Unknown') %>% 
+  mutate(victim_age = as.numeric(victim_age))
 ```
+
+We manipulate data to meet requirements for further analysis.
 
 ### glm for Baltimore
 ```{r}
@@ -154,6 +157,8 @@ p = ggplot(output, aes(x = reorder(city_state, or), y = or, fill = city_state)) 
 print(p)
 ```
 
+From the plot, we find the estimated OR of city Stockton, CA is the largest, and that of New York, NY is the lowest. There is a huge gap between the largest OR and the second largest OR. For confidence interval, the range of CI of Stockton is the largest, considering the estimated OR, and that for San Bernardino, CA is also large compared with other close ORs.
+
 ## Problem 3
 ### load and clean the data
 ```{r}
@@ -170,12 +175,16 @@ bwdata %>%
   )
 ```
 
+We manipulate data to meet requirements for further analysis.
+
 ### my stepwise model
 ```{r}
 lmbw = lm(bwt ~ ., data = bwdata)
 swboth = step(lmbw, direction = 'both')
 summary(swboth)
 ```
+
+We initially create the multiple linear regression (MLR) model using all the variables as predictors. Finally we decide to apply stepwise method for the MLR to obtain the optimal model.
 
 ### add residuals and predictions
 ```{r}
@@ -217,3 +226,5 @@ cv_df %>%
   mutate(model = fct_inorder(model)) %>% 
   ggplot(aes(x = model, y = rmse)) + geom_violin() + ggtitle('model comparison')
 ```
+
+I’m mostly focused on RMSE as a way to compare these models, and the plot above shows the distribution of RMSE values for each candidate model. We can clearly find that the MLR under stepwise model is the best among these three models, and model b with interaction factors is better that the simple MLR of model a.
